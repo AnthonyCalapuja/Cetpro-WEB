@@ -3,18 +3,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { 
-  Building2, 
-  Target, 
-  Eye, 
-  Award, 
-  CheckCircle2, 
-  Briefcase, 
-  GraduationCap, 
-  ArrowRight, 
-  ShieldCheck, 
-  Users, 
-  BookOpen 
+import {
+  Building2,
+  Target,
+  Eye,
+  Award,
+  CheckCircle2,
+  Briefcase,
+  GraduationCap,
+  ArrowRight,
+  ShieldCheck,
+  Users,
+  BookOpen
 } from 'lucide-react';
 
 export default function InstitucionPage() {
@@ -63,7 +63,7 @@ export default function InstitucionPage() {
 
               <div className="w-full md:w-1/2 relative h-72 sm:h-80 rounded-2xl overflow-hidden shadow-lg border border-slate-200">
                 <Image
-                  src="/images/logo-cetpro.jpg"
+                  src="/images/logo-cetpro.png"
                   alt="CETPRO 01 Campus"
                   fill
                   className="object-contain p-6 bg-slate-50"

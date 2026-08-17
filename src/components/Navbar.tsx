@@ -17,6 +17,7 @@ export const Navbar: React.FC = () => {
     { name: 'Institución', href: '/institucion' },
     { name: 'Programas', href: '/programas' },
     { name: 'Admisión', href: '/admision' },
+    { name: 'Noticias', href: '/noticias' },
     { name: 'Contacto', href: '/contacto' },
   ];
 
@@ -56,7 +57,7 @@ export const Navbar: React.FC = () => {
             <Link href="/" className="flex items-center space-x-3 group">
               <div className="relative w-12 h-12 rounded-xl overflow-hidden shadow-md border border-[#A8DADC]/40 group-hover:scale-105 transition-transform bg-white">
                 <Image
-                  src="/images/logo-cetpro.jpg"
+                  src="/images/logo-cetpro.png"
                   alt="Logo CETPRO 01"
                   fill
                   className="object-contain p-1"
@@ -65,7 +66,7 @@ export const Navbar: React.FC = () => {
               </div>
               <div className="flex flex-col">
                 <span className="font-extrabold text-xl tracking-tight text-[#1E2D3B]">
-                  CETPRO <span className="text-[#6F8FA6]">01</span>
+                  CETPRO <span className="text-[#6F8FA6]">01</span> ABANCAY
                 </span>
                 <span className="text-[10px] font-semibold tracking-wider uppercase text-[#4A607A]">
                   Centro de Ed. Técnico-Productiva
@@ -81,11 +82,10 @@ export const Navbar: React.FC = () => {
                   <Link
                     key={link.name}
                     href={link.href}
-                    className={`px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                      active
-                        ? 'bg-[#A8DADC]/30 text-[#1E2D3B] shadow-sm'
-                        : 'text-[#4A607A] hover:text-[#1E2D3B] hover:bg-[#F0F7F9]'
-                    }`}
+                    className={`px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${active
+                      ? 'bg-[#A8DADC]/30 text-[#1E2D3B] shadow-sm'
+                      : 'text-[#4A607A] hover:text-[#1E2D3B] hover:bg-[#F0F7F9]'
+                      }`}
                   >
                     {link.name}
                   </Link>
@@ -140,11 +140,10 @@ export const Navbar: React.FC = () => {
                     key={link.name}
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center justify-between px-4 py-3 rounded-xl text-base font-semibold transition-colors ${
-                      active
-                        ? 'bg-[#A8DADC]/40 text-[#1E2D3B]'
-                        : 'text-[#4A607A] hover:bg-[#F0F7F9] hover:text-[#1E2D3B]'
-                    }`}
+                    className={`flex items-center justify-between px-4 py-3 rounded-xl text-base font-semibold transition-colors ${active
+                      ? 'bg-[#A8DADC]/40 text-[#1E2D3B]'
+                      : 'text-[#4A607A] hover:bg-[#F0F7F9] hover:text-[#1E2D3B]'
+                      }`}
                   >
                     <span>{link.name}</span>
                     <ChevronRight className="w-4 h-4 opacity-60" />

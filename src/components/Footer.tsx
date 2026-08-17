@@ -8,24 +8,24 @@ export const Footer: React.FC = () => {
     <footer className="bg-[#1E2D3B] text-white pt-16 pb-8 border-t border-[#6F8FA6]/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-700/60">
-          
+
           {/* Columna 1: CETPRO Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white p-1 shadow-md">
                 <Image
-                  src="/images/logo-cetpro.jpg"
+                  src="/images/logo-cetpro.png"
                   alt="Logo CETPRO 01"
                   fill
                   className="object-contain"
                 />
               </div>
               <div>
-                <h3 className="font-extrabold text-xl tracking-tight text-white">CETPRO 01</h3>
+                <h3 className="font-extrabold text-xl tracking-tight text-white">CETPRO 01 ABANCAY</h3>
                 <p className="text-xs text-[#A8DADC] font-medium">Ed. Técnico-Productiva</p>
               </div>
             </div>
-            
+
             <p className="text-xs text-slate-300 leading-relaxed">
               Formación técnica de excelencia orientada a la inserción laboral inmediata y el emprendimiento rentable con título a Nombre de la Nación.
             </p>
@@ -64,6 +64,12 @@ export const Footer: React.FC = () => {
                 <Link href="/admision" className="hover:text-[#A8DADC] transition-colors flex items-center space-x-1.5">
                   <ArrowRight className="w-3 h-3 text-[#A8DADC]" />
                   <span>Proceso de Admisión</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/noticias" className="hover:text-[#A8DADC] transition-colors flex items-center space-x-1.5">
+                  <ArrowRight className="w-3 h-3 text-[#A8DADC]" />
+                  <span>Noticias y Novedades</span>
                 </Link>
               </li>
               <li>
@@ -106,8 +112,13 @@ export const Footer: React.FC = () => {
               <div className="flex items-start space-x-2.5">
                 <MapPin className="w-4 h-4 text-[#A8DADC] shrink-0 mt-0.5" />
                 <div>
-                  <span className="block text-slate-400">Ubicación:</span>
-                  <span className="text-slate-200">Sede Principal CETPRO 01</span>
+                  <span className="block text-slate-400">Ubicación Sede Central:</span>
+                  <Link
+                    href="/contacto#mapa-ubicacion"
+                    className="text-slate-200 hover:text-[#A8DADC] transition-colors block"
+                  >
+                    Jr. Huancavelica 400, Abancay 03001
+                  </Link>
                 </div>
               </div>
 
