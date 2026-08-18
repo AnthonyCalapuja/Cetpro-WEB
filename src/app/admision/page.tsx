@@ -19,7 +19,9 @@ import {
   ArrowRight,
   ShieldCheck,
   HelpCircle,
-  Clock
+  Clock,
+  Loader2,
+  Database
 } from 'lucide-react';
 
 interface FormData {
@@ -48,8 +50,11 @@ export default function AdmisionPage() {
   });
 
   const [documentError, setDocumentError] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [constanciaCode, setConstanciaCode] = useState<string>('');
+  const [fechaRegistroOficial, setFechaRegistroOficial] = useState<string>('');
 
   // Dynamic automatic calculation of age based on fechaNacimiento
   useEffect(() => {
@@ -97,7 +102,7 @@ export default function AdmisionPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (formData.tipoDocumento === 'DNI' && formData.numeroDocumento.length !== 8) {
@@ -105,10 +110,41 @@ export default function AdmisionPage() {
       return;
     }
 
-    // Generate ticket code
-    const randomCode = 'ADM-2026-' + Math.floor(100000 + Math.random() * 900000);
-    setConstanciaCode(randomCode);
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const response = await fetch('/api/preinscripcion.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setConstanciaCode(result.codigo || ('ADM-2026-' + Math.floor(100000 + Math.random() * 900000)));
+        setFechaRegistroOficial(result.data?.fechaRegistro || new Date().toLocaleString('es-PE'));
+        setIsSubmitted(true);
+      } else {
+        if (result.errors && Array.isArray(result.errors)) {
+          setSubmitError(result.errors.join(' '));
+        } else {
+          setSubmitError(result.message || 'Ocurrió un error al registrar en la base de datos.');
+        }
+      }
+    } catch (err: any) {
+      console.error('Error enviando preinscripción:', err);
+      // Si estamos en entorno de desarrollo local sin PHP/MySQL activo, o si falló la red:
+      setSubmitError(
+        'No se pudo conectar con el servidor de base de datos de Hostinger. Asegúrate de haber configurado los datos en public/api/config.php y que la web esté desplegada en Hostinger.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -320,14 +356,39 @@ export default function AdmisionPage() {
                       </div>
                     </div>
 
+                    {/* Alerta de Error si ocurre */}
+                    {submitError && (
+                      <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs space-y-1 animate-fadeIn">
+                        <div className="flex items-center space-x-2 font-bold text-red-800">
+                          <AlertCircle className="w-4 h-4 shrink-0" />
+                          <span>No se pudo completar el registro</span>
+                        </div>
+                        <p className="leading-relaxed pl-6">{submitError}</p>
+                      </div>
+                    )}
+
                     {/* Submit Button */}
-                    <div className="pt-4">
+                    <div className="pt-2">
                       <button
                         type="submit"
-                        className="w-full py-4 px-6 rounded-2xl bg-[#1E2D3B] text-white hover:bg-[#4A607A] font-bold text-base shadow-xl hover:shadow-[#1E2D3B]/20 transition-all flex items-center justify-center space-x-2"
+                        disabled={isSubmitting}
+                        className={`w-full py-4 px-6 rounded-2xl text-white font-bold text-base shadow-xl transition-all flex items-center justify-center space-x-2 ${
+                          isSubmitting
+                            ? 'bg-[#4A607A] cursor-not-allowed opacity-90'
+                            : 'bg-[#1E2D3B] hover:bg-[#4A607A] hover:shadow-[#1E2D3B]/20 active:scale-[0.99]'
+                        }`}
                       >
-                        <CheckCircle2 className="w-5 h-5 text-[#A8DADC]" />
-                        <span>Enviar Pre-Inscripción Oficial</span>
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="w-5 h-5 animate-spin text-[#A8DADC]" />
+                            <span>Registrando en Base de Datos...</span>
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle2 className="w-5 h-5 text-[#A8DADC]" />
+                            <span>Enviar Pre-Inscripción Oficial</span>
+                          </>
+                        )}
                       </button>
                     </div>
                   </form>
@@ -343,7 +404,7 @@ export default function AdmisionPage() {
                       ¡Pre-Inscripción Exitosa!
                     </h3>
                     <p className="text-xs text-emerald-700">
-                      Tus datos han sido registrados en la base de admisiones del CETPRO 01.
+                      Tus datos han sido registrados correctamente en la base de admisiones del CETPRO 01 en Hostinger.
                     </p>
                   </div>
 
@@ -354,9 +415,16 @@ export default function AdmisionPage() {
                         <span className="text-[10px] uppercase font-bold text-[#6F8FA6]">Ficha de Postulación</span>
                         <h4 className="font-extrabold text-lg text-[#1E2D3B]">{formData.especialidad}</h4>
                       </div>
-                      <span className="px-3 py-1 bg-[#1E2D3B] text-[#A8DADC] text-xs font-mono font-bold rounded-lg">
-                        {constanciaCode}
-                      </span>
+                      <div className="text-right">
+                        <span className="px-3 py-1 bg-[#1E2D3B] text-[#A8DADC] text-xs font-mono font-bold rounded-lg block">
+                          {constanciaCode}
+                        </span>
+                        {fechaRegistroOficial && (
+                          <span className="text-[10px] text-slate-500 block pt-1">
+                            {fechaRegistroOficial}
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3 text-xs text-[#1E2D3B]">
@@ -384,6 +452,14 @@ export default function AdmisionPage() {
                         <span className="text-slate-500 block">WhatsApp:</span>
                         <span className="font-bold">{formData.telefono}</span>
                       </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-slate-200/80 flex items-center justify-between text-[11px] text-slate-500">
+                      <span className="flex items-center space-x-1 text-emerald-700 font-semibold">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>Registro Guardado en Servidor Hostinger</span>
+                      </span>
+                      <span className="text-slate-400">Estado: Pendiente</span>
                     </div>
                   </div>
 
