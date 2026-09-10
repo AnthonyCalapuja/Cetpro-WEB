@@ -94,7 +94,7 @@ export const Navbar: React.FC = () => {
             {/* Aula Virtual Button */}
             <div className="hidden md:flex items-center">
               <a
-                href="http://www.aulavirtual.cetpro01.edu.pe/"
+                href="https://aulavirtual.cetpro01.edu.pe/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="relative inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-[#1E2D3B] text-white hover:bg-[#4A607A] font-semibold text-sm shadow-md transition-all group overflow-hidden"
@@ -112,7 +112,7 @@ export const Navbar: React.FC = () => {
             {/* Mobile Menu Button */}
             <div className="flex md:hidden items-center space-x-2">
               <a
-                href="http://www.aulavirtual.cetpro01.edu.pe/"
+                href="https://aulavirtual.cetpro01.edu.pe/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 bg-[#1E2D3B] text-[#A8DADC] rounded-xl text-xs font-bold flex items-center justify-center"
@@ -156,7 +156,7 @@ export const Navbar: React.FC = () => {
 
             <div className="mt-4 pt-4 border-t border-slate-100">
               <a
-                href="http://www.aulavirtual.cetpro01.edu.pe/"
+                href="https://aulavirtual.cetpro01.edu.pe/"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setIsMobileMenuOpen(false)}
