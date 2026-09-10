@@ -158,10 +158,33 @@ try {
 
     $idInsertado = $pdo->lastInsertId();
 
+    // Sincronizar con Google Sheets si la URL del webhook está configurada
+    if (defined('GOOGLE_SHEETS_WEBHOOK_URL') && !empty(GOOGLE_SHEETS_WEBHOOK_URL)) {
+        try {
+            sincronizarGoogleSheets(GOOGLE_SHEETS_WEBHOOK_URL, [
+                'codigo_constancia' => $codigoConstancia,
+                'apellidos_nombres' => $apellidosNombres,
+                'tipo_documento'    => $tipoDocumento,
+                'numero_documento'  => $numeroDocumento,
+                'fecha_nacimiento'  => $fechaNacimiento,
+                'edad'              => $edad,
+                'genero'            => $genero,
+                'correo'            => $correo,
+                'telefono'          => $telefono,
+                'especialidad'      => $especialidad,
+                'fecha_registro'    => date('d/m/Y H:i:s'),
+                'ip_registro'       => $ipRegistro
+            ]);
+        } catch (Throwable $t) {
+            // Se registra el error sin afectar la respuesta positiva al usuario
+            error_log("Error en sincronizarGoogleSheets: " . $t->getMessage());
+        }
+    }
+
     http_response_code(200);
     echo json_encode([
         'success' => true,
-        'message' => '¡Pre-inscripción registrada exitosamente en la base de datos!',
+        'message' => '¡Pre-inscripción registrada exitosamente en la base de datos y Google Sheets!',
         'codigo'  => $codigoConstancia,
         'id'      => $idInsertado,
         'data'    => [
@@ -187,3 +210,40 @@ try {
         'error_detail' => $e->getMessage()
     ], JSON_UNESCAPED_UNICODE);
 }
+
+/**
+ * Envía los datos de la preinscripción a Google Sheets mediante Webhook (Google Apps Script)
+ */
+function sincronizarGoogleSheets($webhookUrl, array $datos) {
+    if (empty($webhookUrl)) {
+        return false;
+    }
+
+    $payload = json_encode($datos, JSON_UNESCAPED_UNICODE);
+
+    $ch = curl_init($webhookUrl);
+    curl_setopt_array($ch, [
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => $payload,
+        CURLOPT_HTTPHEADER     => [
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($payload)
+        ],
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_FOLLOWLOCATION => true, // Importante: Google Apps Script redirecciona (302)
+        CURLOPT_TIMEOUT        => 10,   // Timeout de 10 segundos
+        CURLOPT_SSL_VERIFYPEER => true
+    ]);
+
+    $response = curl_exec($ch);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+
+    if ($curlError) {
+        error_log("Error cURL sincronizando con Google Sheets: " . $curlError);
+        return false;
+    }
+
+    return true;
+}
+

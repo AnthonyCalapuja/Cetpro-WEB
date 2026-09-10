@@ -5,11 +5,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { GraduationCap, Menu, X, ChevronRight, Phone, Mail } from 'lucide-react';
-import { MoodleModal } from './MoodleModal';
 
 export const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMoodleModalOpen, setIsMoodleModalOpen] = useState(false);
   const pathname = usePathname();
 
   const navLinks = [
@@ -31,7 +29,7 @@ export const Navbar: React.FC = () => {
     <>
       {/* Top Bar Banner */}
       <div className="bg-[#1E2D3B] text-white text-xs py-2 px-4 border-b border-[#6F8FA6]/20">
-        <div className="max-w-7xl mx-mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-2">
           <div className="flex items-center space-x-4">
             <span className="inline-flex items-center space-x-1 text-[#A8DADC]">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -95,8 +93,10 @@ export const Navbar: React.FC = () => {
 
             {/* Aula Virtual Button */}
             <div className="hidden md:flex items-center">
-              <button
-                onClick={() => setIsMoodleModalOpen(true)}
+              <a
+                href="http://www.aulavirtual.cetpro01.edu.pe/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="relative inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-[#1E2D3B] text-white hover:bg-[#4A607A] font-semibold text-sm shadow-md transition-all group overflow-hidden"
               >
                 <div className="p-1 bg-[#A8DADC] text-[#1E2D3B] rounded-lg group-hover:rotate-12 transition-transform">
@@ -106,18 +106,20 @@ export const Navbar: React.FC = () => {
                 <span className="ml-1 px-1.5 py-0.5 text-[10px] uppercase font-bold bg-[#F8C8C8] text-[#1E2D3B] rounded-md">
                   Moodle
                 </span>
-              </button>
+              </a>
             </div>
 
             {/* Mobile Menu Button */}
             <div className="flex md:hidden items-center space-x-2">
-              <button
-                onClick={() => setIsMoodleModalOpen(true)}
-                className="p-2 bg-[#1E2D3B] text-[#A8DADC] rounded-xl text-xs font-bold"
+              <a
+                href="http://www.aulavirtual.cetpro01.edu.pe/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 bg-[#1E2D3B] text-[#A8DADC] rounded-xl text-xs font-bold flex items-center justify-center"
                 aria-label="Aula Virtual"
               >
                 <GraduationCap className="w-5 h-5" />
-              </button>
+              </a>
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="p-2.5 rounded-xl text-[#1E2D3B] hover:bg-[#F0F7F9] transition-colors"
@@ -153,23 +155,21 @@ export const Navbar: React.FC = () => {
             </div>
 
             <div className="mt-4 pt-4 border-t border-slate-100">
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  setIsMoodleModalOpen(true);
-                }}
-                className="w-full py-3 px-4 rounded-xl bg-[#1E2D3B] text-white font-semibold text-sm flex items-center justify-center space-x-2 shadow-md"
+              <a
+                href="http://www.aulavirtual.cetpro01.edu.pe/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full py-3 px-4 rounded-xl bg-[#1E2D3B] text-white font-semibold text-sm flex items-center justify-center space-x-2 shadow-md hover:bg-[#4A607A] transition-colors"
               >
                 <GraduationCap className="w-5 h-5 text-[#A8DADC]" />
                 <span>Ingresar al Aula Virtual (Moodle)</span>
-              </button>
+              </a>
             </div>
           </div>
         )}
       </header>
-
-      {/* Moodle Info Modal */}
-      <MoodleModal isOpen={isMoodleModalOpen} onClose={() => setIsMoodleModalOpen(false)} />
     </>
   );
 };
+

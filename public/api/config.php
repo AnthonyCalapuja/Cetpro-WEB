@@ -27,3 +27,8 @@ define('DB_CHARSET', 'utf8mb4');
 
 // Configuración de zona horaria (Perú / UTC-5)
 date_default_timezone_set('America/Lima');
+
+// URL del Webhook de Google Apps Script para Google Sheets
+// Pega aquí la URL de la Aplicación Web generada al desplegar en Google Sheets
+define('GOOGLE_SHEETS_WEBHOOK_URL', 'https://script.google.com/macros/s/AKfycbxtsSXYcykbY0EQfr3uVBSE20p910p_BQq38T7bw7j7f_a10H0tASjh-lwmIfBQoKJq/exec');
+
