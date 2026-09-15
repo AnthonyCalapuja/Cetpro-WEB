@@ -107,9 +107,14 @@ require_once __DIR__ . '/db.php';
 try {
     $pdo = getDbConnection();
 
-    // Generar código único de constancia oficial
-    // Formato: ADM-2026-XXXXXX
-    $codigoConstancia = 'ADM-2026-' . str_pad(mt_rand(100000, 999999), 6, '0', STR_PAD_LEFT);
+    // Reutilizar el código enviado por el formulario para consistencia exacta con Google Sheets y la constancia
+    if (!empty($data['codigo'])) {
+        $codigoConstancia = trim(strip_tags($data['codigo']));
+    } elseif (!empty($data['codigoConstancia'])) {
+        $codigoConstancia = trim(strip_tags($data['codigoConstancia']));
+    } else {
+        $codigoConstancia = 'ADM-2026-' . str_pad(mt_rand(100000, 999999), 6, '0', STR_PAD_LEFT);
+    }
 
     // Preparar inserción segura con Prepared Statement (Evita SQL Injection)
     $stmt = $pdo->prepare("
@@ -158,8 +163,9 @@ try {
 
     $idInsertado = $pdo->lastInsertId();
 
-    // Sincronizar con Google Sheets si la URL del webhook está configurada
-    if (defined('GOOGLE_SHEETS_WEBHOOK_URL') && !empty(GOOGLE_SHEETS_WEBHOOK_URL)) {
+    // Sincronizar con Google Sheets únicamente si no fue enviado directamente desde el frontend
+    $yaEnviadoASheets = !empty($data['fromFrontendWithSheets']);
+    if (!$yaEnviadoASheets && defined('GOOGLE_SHEETS_WEBHOOK_URL') && !empty(GOOGLE_SHEETS_WEBHOOK_URL)) {
         try {
             sincronizarGoogleSheets(GOOGLE_SHEETS_WEBHOOK_URL, [
                 'codigo_constancia' => $codigoConstancia,
