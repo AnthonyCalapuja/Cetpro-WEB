@@ -5,17 +5,17 @@ import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { PROGRAMS } from '@/data/programsData';
-import { 
-  UserCheck, 
-  FileText, 
-  Calendar, 
-  Mail, 
-  Phone, 
-  BookOpen, 
-  CheckCircle2, 
-  AlertCircle, 
-  Sparkles, 
-  Printer, 
+import {
+  UserCheck,
+  FileText,
+  Calendar,
+  Mail,
+  Phone,
+  BookOpen,
+  CheckCircle2,
+  AlertCircle,
+  Sparkles,
+  Printer,
   ArrowRight,
   ShieldCheck,
   HelpCircle,
@@ -65,7 +65,7 @@ export default function AdmisionPage() {
 
     const birthDate = new Date(formData.fechaNacimiento);
     const today = new Date();
-    
+
     if (isNaN(birthDate.getTime())) {
       setFormData(prev => ({ ...prev, edad: '' }));
       return;
@@ -73,7 +73,7 @@ export default function AdmisionPage() {
 
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    
+
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
@@ -90,7 +90,7 @@ export default function AdmisionPage() {
     if (formData.tipoDocumento === 'DNI') {
       const sanitized = value.replace(/\D/g, '').slice(0, 8);
       setFormData(prev => ({ ...prev, numeroDocumento: sanitized }));
-      
+
       if (sanitized.length > 0 && sanitized.length < 8) {
         setDocumentError('El DNI debe tener exactamente 8 dígitos numéricos.');
       } else {
@@ -113,34 +113,51 @@ export default function AdmisionPage() {
     setIsSubmitting(true);
     setSubmitError(null);
 
+    const scriptUrl =
+      process.env.NEXT_PUBLIC_GOOGLE_SHEET_URL ||
+      'https://script.google.com/macros/s/AKfycbxtsSXYcykbY0EQfr3uVBSE20p910p_BQq38T7bw7j7f_a10H0tASjh-lwmIfBQoKJq/exec';
+
+    if (!scriptUrl || scriptUrl.trim() === '') {
+      setSubmitError(
+        'Falta configurar la URL de Google Sheets. Por favor, pega la URL de tu Google Apps Script en la variable NEXT_PUBLIC_GOOGLE_SHEET_URL dentro del archivo .env.local.'
+      );
+      setIsSubmitting(false);
+      return;
+    }
+
+    const codigoGenerado = 'ADM-2026-' + Math.floor(100000 + Math.random() * 900000);
+    const fechaActual = new Date().toLocaleString('es-PE', {
+      timeZone: 'America/Lima',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+
     try {
-      const response = await fetch('/api/preinscripcion.php', {
+      // Enviamos el payload como text/plain en modo no-cors para evitar problemas con preflight CORS de Google Apps Script
+      await fetch(scriptUrl, {
         method: 'POST',
+        mode: 'no-cors',
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Content-Type': 'text/plain;charset=utf-8',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          codigo: codigoGenerado,
+          fechaRegistro: fechaActual
+        })
       });
 
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        setConstanciaCode(result.codigo || ('ADM-2026-' + Math.floor(100000 + Math.random() * 900000)));
-        setFechaRegistroOficial(result.data?.fechaRegistro || new Date().toLocaleString('es-PE'));
-        setIsSubmitted(true);
-      } else {
-        if (result.errors && Array.isArray(result.errors)) {
-          setSubmitError(result.errors.join(' '));
-        } else {
-          setSubmitError(result.message || 'Ocurrió un error al registrar en la base de datos.');
-        }
-      }
+      setConstanciaCode(codigoGenerado);
+      setFechaRegistroOficial(fechaActual);
+      setIsSubmitted(true);
     } catch (err: any) {
-      console.error('Error enviando preinscripción:', err);
-      // Si estamos en entorno de desarrollo local sin PHP/MySQL activo, o si falló la red:
+      console.error('Error enviando preinscripción a la base de datos:', err);
       setSubmitError(
-        'No se pudo conectar con el servidor de base de datos de Hostinger. Asegúrate de haber configurado los datos en public/api/config.php y que la web esté desplegada en Hostinger.'
+        'Ocurrió un problema de conexión al registrar los datos en la base de datos. Por favor, verifica tu conexión o el enlace en .env.local.'
       );
     } finally {
       setIsSubmitting(false);
@@ -170,7 +187,7 @@ export default function AdmisionPage() {
         {/* Section: Form & Steps */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-            
+
             {/* Form Column */}
             <div className="lg:col-span-8 bg-white rounded-3xl p-8 sm:p-10 border border-[#A8DADC]/60 shadow-xl space-y-6">
               {!isSubmitted ? (
@@ -235,9 +252,8 @@ export default function AdmisionPage() {
                           placeholder={formData.tipoDocumento === 'DNI' ? '8 dígitos numéricos' : 'Número de documento'}
                           value={formData.numeroDocumento}
                           onChange={(e) => handleNumeroDocumentoChange(e.target.value)}
-                          className={`w-full px-4 py-3 rounded-xl border outline-none text-sm text-[#1E2D3B] transition-all ${
-                            documentError ? 'border-red-400 bg-red-50/50' : 'border-slate-200 focus:border-[#A8DADC] focus:ring-2 focus:ring-[#A8DADC]/40 bg-[#F0F7F9]/30'
-                          }`}
+                          className={`w-full px-4 py-3 rounded-xl border outline-none text-sm text-[#1E2D3B] transition-all ${documentError ? 'border-red-400 bg-red-50/50' : 'border-slate-200 focus:border-[#A8DADC] focus:ring-2 focus:ring-[#A8DADC]/40 bg-[#F0F7F9]/30'
+                            }`}
                         />
                         {documentError && (
                           <span className="text-[11px] text-red-500 font-semibold flex items-center space-x-1">
@@ -372,16 +388,15 @@ export default function AdmisionPage() {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className={`w-full py-4 px-6 rounded-2xl text-white font-bold text-base shadow-xl transition-all flex items-center justify-center space-x-2 ${
-                          isSubmitting
-                            ? 'bg-[#4A607A] cursor-not-allowed opacity-90'
-                            : 'bg-[#1E2D3B] hover:bg-[#4A607A] hover:shadow-[#1E2D3B]/20 active:scale-[0.99]'
-                        }`}
+                        className={`w-full py-4 px-6 rounded-2xl text-white font-bold text-base shadow-xl transition-all flex items-center justify-center space-x-2 ${isSubmitting
+                          ? 'bg-[#4A607A] cursor-not-allowed opacity-90'
+                          : 'bg-[#1E2D3B] hover:bg-[#4A607A] hover:shadow-[#1E2D3B]/20 active:scale-[0.99]'
+                          }`}
                       >
                         {isSubmitting ? (
                           <>
                             <Loader2 className="w-5 h-5 animate-spin text-[#A8DADC]" />
-                            <span>Registrando en Base de Datos...</span>
+                            <span>Guardando en la base de datos...</span>
                           </>
                         ) : (
                           <>
@@ -404,7 +419,7 @@ export default function AdmisionPage() {
                       ¡Pre-Inscripción Exitosa!
                     </h3>
                     <p className="text-xs text-emerald-700">
-                      Tus datos han sido registrados correctamente en la base de admisiones del CETPRO 01 en Hostinger.
+                      Tus datos han sido registrados correctamente en la base de admisiones del CETPRO 01.
                     </p>
                   </div>
 
@@ -457,7 +472,7 @@ export default function AdmisionPage() {
                     <div className="pt-2 border-t border-slate-200/80 flex items-center justify-between text-[11px] text-slate-500">
                       <span className="flex items-center space-x-1 text-emerald-700 font-semibold">
                         <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span>Registro Guardado en Servidor Hostinger</span>
+                        <span>Registro Guardado Correctamente</span>
                       </span>
                       <span className="text-slate-400">Estado: Pendiente</span>
                     </div>
@@ -497,7 +512,7 @@ export default function AdmisionPage() {
 
             {/* Sidebar Column: Requisitos y Proceso */}
             <div className="lg:col-span-4 space-y-6">
-              
+
               {/* Requisitos */}
               <div className="bg-white rounded-3xl p-6 border border-[#A8DADC]/40 shadow-lg space-y-4">
                 <div className="flex items-center space-x-2 text-[#1E2D3B] font-bold text-base">
