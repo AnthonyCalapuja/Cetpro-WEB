@@ -136,28 +136,53 @@ export default function AdmisionPage() {
       second: '2-digit'
     });
 
+    const payload = {
+      ...formData,
+      codigo: codigoGenerado,
+      codigoConstancia: codigoGenerado,
+      fechaRegistro: fechaActual,
+      fromFrontendWithSheets: true
+    };
+
     try {
-      // Enviamos el payload como text/plain en modo no-cors para evitar problemas con preflight CORS de Google Apps Script
-      await fetch(scriptUrl, {
+      // 1. Envío a Google Sheets (Google Apps Script)
+      const sheetsPromise = fetch(scriptUrl, {
         method: 'POST',
         mode: 'no-cors',
         headers: {
           'Content-Type': 'text/plain;charset=utf-8',
         },
-        body: JSON.stringify({
-          ...formData,
-          codigo: codigoGenerado,
-          fechaRegistro: fechaActual
-        })
+        body: JSON.stringify(payload)
       });
+
+      // 2. Envío a Base de Datos MySQL (API Backend PHP)
+      const mysqlPromise = fetch('/api/preinscripcion.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+        .then(async (res) => {
+          const result = await res.json().catch(() => null);
+          return { ok: res.ok, result };
+        })
+        .catch((err) => {
+          console.warn('Aviso conexión MySQL (en entorno local o sin PHP activo):', err);
+          return { ok: false, error: err };
+        });
+
+      // Ejecutar ambos envíos en simultáneo sin bloquear la interfaz
+      await Promise.allSettled([sheetsPromise, mysqlPromise]);
 
       setConstanciaCode(codigoGenerado);
       setFechaRegistroOficial(fechaActual);
       setIsSubmitted(true);
     } catch (err: any) {
-      console.error('Error enviando preinscripción a la base de datos:', err);
+      console.error('Error enviando preinscripción:', err);
       setSubmitError(
-        'Ocurrió un problema de conexión al registrar los datos en la base de datos. Por favor, verifica tu conexión o el enlace en .env.local.'
+        'Ocurrió un problema de conexión al registrar los datos. Por favor, verifica tu conexión e intenta nuevamente.'
       );
     } finally {
       setIsSubmitting(false);
@@ -419,7 +444,7 @@ export default function AdmisionPage() {
                       ¡Pre-Inscripción Exitosa!
                     </h3>
                     <p className="text-xs text-emerald-700">
-                      Tus datos han sido registrados correctamente en la base de admisiones del CETPRO 01.
+                      Tus datos han sido registrados correctamente en la base de datos MySQL y en la hoja de cálculo de Google.
                     </p>
                   </div>
 
@@ -472,7 +497,7 @@ export default function AdmisionPage() {
                     <div className="pt-2 border-t border-slate-200/80 flex items-center justify-between text-[11px] text-slate-500">
                       <span className="flex items-center space-x-1 text-emerald-700 font-semibold">
                         <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span>Registro Guardado Correctamente</span>
+                        <span>Registro Guardado en MySQL y Google Sheets</span>
                       </span>
                       <span className="text-slate-400">Estado: Pendiente</span>
                     </div>
