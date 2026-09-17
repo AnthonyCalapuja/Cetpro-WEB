@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[3575],{93575:(e,r,n)=>{n.r(r),n.d(r,{SingleDocReleaseLayout:()=>t});var c=n(95642),l=n(19749),s=n(95155);function t(e){let r,n=(0,l.c)(4),t;return n[0]===e?t=n[1]:(t=e.renderDefault(e),n[0]=e,n[1]=t),n[2]===t?r=n[3]:(r=(0,s.jsx)(c.r,{children:(0,s.jsx)(c.t,{children:t})}),n[2]=t,n[3]=r),r}}}]);
