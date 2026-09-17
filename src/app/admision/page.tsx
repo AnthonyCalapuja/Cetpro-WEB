@@ -444,7 +444,7 @@ export default function AdmisionPage() {
                       ¡Pre-Inscripción Exitosa!
                     </h3>
                     <p className="text-xs text-emerald-700">
-                      Tus datos han sido registrados correctamente en la base de datos MySQL y en la hoja de cálculo de Google.
+                      Tus datos han sido registrados correctamente.
                     </p>
                   </div>
 
@@ -497,7 +497,7 @@ export default function AdmisionPage() {
                     <div className="pt-2 border-t border-slate-200/80 flex items-center justify-between text-[11px] text-slate-500">
                       <span className="flex items-center space-x-1 text-emerald-700 font-semibold">
                         <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span>Registro Guardado en MySQL y Google Sheets</span>
+                        <span>Registro Guardado Correctamente</span>
                       </span>
                       <span className="text-slate-400">Estado: Pendiente</span>
                     </div>
@@ -574,8 +574,12 @@ export default function AdmisionPage() {
                 <h4 className="font-bold text-lg">Horario de Atención Presencial</h4>
                 <div className="text-xs text-slate-300 space-y-1 font-light">
                   <p>• Lunes a Viernes: 8:00 am - 5:00 pm</p>
-                  <p>• Sábados: 9:00 am - 1:00 pm</p>
-                  <p className="pt-2 text-[#A8DADC] font-semibold">Correo oficial: admision@cetpro.edu.pe</p>
+                  <p className="pt-2 text-[#A8DADC] font-semibold">
+                    Correo oficial:{' '}
+                    <a href="mailto:cetproabancay01@gmail.com" className="underline hover:text-white transition-colors">
+                      cetproabancay01@gmail.com
+                    </a>
+                  </p>
                 </div>
               </div>
 

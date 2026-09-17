@@ -297,7 +297,10 @@ export default function Home() {
               </h2>
               <p className="text-slate-200 text-sm leading-relaxed">
                 Ponte en contacto directo con nuestro equipo de admisiones. Escríbenos a{' '}
-                <span className="font-bold text-[#A8DADC]">admision@cetpro.edu.pe</span> y asegura tu vacante.
+                <a href="mailto:cetproabancay01@gmail.com" className="font-bold text-[#A8DADC] hover:underline">
+                  cetproabancay01@gmail.com
+                </a>{' '}
+                y asegura tu vacante.
               </p>
             </div>
 

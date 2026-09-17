@@ -39,9 +39,9 @@ export const Navbar: React.FC = () => {
             <span className="hidden md:inline text-slate-300">Educación Técnico-Productiva de Calidad</span>
           </div>
           <div className="flex items-center space-x-4 text-slate-300">
-            <a href="mailto:admision@cetpro.edu.pe" className="hover:text-[#A8DADC] transition-colors flex items-center space-x-1">
+            <a href="mailto:cetproabancay01@gmail.com" className="hover:text-[#A8DADC] transition-colors flex items-center space-x-1">
               <Mail className="w-3.5 h-3.5" />
-              <span>admision@cetpro.edu.pe</span>
+              <span>cetproabancay01@gmail.com</span>
             </a>
           </div>
         </div>

@@ -103,8 +103,8 @@ export const Footer: React.FC = () => {
                 <Mail className="w-4 h-4 text-[#A8DADC] shrink-0 mt-0.5" />
                 <div>
                   <span className="block text-slate-400">Correo Oficial:</span>
-                  <a href="mailto:admision@cetpro.edu.pe" className="text-white font-medium hover:text-[#A8DADC] underline transition-colors">
-                    admision@cetpro.edu.pe
+                  <a href="mailto:cetproabancay01@gmail.com" className="text-white font-medium hover:text-[#A8DADC] underline transition-colors">
+                    cetproabancay01@gmail.com
                   </a>
                 </div>
               </div>

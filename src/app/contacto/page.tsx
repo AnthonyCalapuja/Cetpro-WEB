@@ -50,7 +50,7 @@ export default function ContactoPage() {
       <Navbar />
 
       <main className="flex-grow space-y-16 pb-20">
-        {/* Banner Oficial con Correo Destacado admision@cetpro.edu.pe */}
+        {/* Banner Oficial con Correo Destacado cetproabancay01@gmail.com */}
         <section className="bg-gradient-to-r from-[#1E2D3B] via-[#4A607A] to-[#6F8FA6] text-white py-16 px-4 sm:px-6 lg:px-8 shadow-md">
           <div className="max-w-7xl mx-auto space-y-6 text-center">
             <span className="text-xs uppercase font-bold tracking-widest text-[#A8DADC] bg-white/10 px-4 py-1.5 rounded-full inline-block backdrop-blur-md">
@@ -74,10 +74,10 @@ export default function ContactoPage() {
                     Correo Institucional Oficial de Admisiones
                   </span>
                   <a
-                    href="mailto:admision@cetpro.edu.pe"
+                    href="mailto:cetproabancay01@gmail.com"
                     className="text-xl sm:text-2xl font-extrabold text-[#A8DADC] hover:underline transition-all"
                   >
-                    admision@cetpro.edu.pe
+                    cetproabancay01@gmail.com
                   </a>
                 </div>
               </div>
@@ -108,8 +108,8 @@ export default function ContactoPage() {
                       <span className="text-xs font-bold text-[#6F8FA6] uppercase tracking-wider block">
                         Correo de Admisiones
                       </span>
-                      <a href="mailto:admision@cetpro.edu.pe" className="font-bold text-[#1E2D3B] hover:text-[#6F8FA6] underline">
-                        admision@cetpro.edu.pe
+                      <a href="mailto:cetproabancay01@gmail.com" className="font-bold text-[#1E2D3B] hover:text-[#6F8FA6] underline">
+                        cetproabancay01@gmail.com
                       </a>
                     </div>
                   </div>
@@ -279,7 +279,7 @@ export default function ContactoPage() {
                         className="w-full py-4 px-6 rounded-2xl bg-[#1E2D3B] text-white hover:bg-[#4A607A] font-bold text-sm shadow-xl transition-all flex items-center justify-center space-x-2"
                       >
                         <Send className="w-4 h-4 text-[#A8DADC]" />
-                        <span>Enviar Mensaje a admision@cetpro.edu.pe</span>
+                        <span>Enviar Mensaje a cetproabancay01@gmail.com</span>
                       </button>
                     </div>
                   </form>
