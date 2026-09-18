@@ -20,11 +20,15 @@ import {
   Check,
   Compass,
   Bus,
-  Car
+  Car,
+  Loader2,
+  AlertTriangle
 } from 'lucide-react';
 
 export default function ContactoPage() {
   const [formSent, setFormSent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [formState, setFormState] = useState({
     nombre: '',
@@ -32,6 +36,7 @@ export default function ContactoPage() {
     telefono: '',
     asunto: 'Informes sobre Carreras Técnicas',
     mensaje: '',
+    botcheck: false,
   });
 
   const handleCopyAddress = () => {
@@ -40,9 +45,52 @@ export default function ContactoPage() {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormSent(true);
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const accessKey =
+        process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY || '2914e023-0123-4091-9e64-8e299702397e';
+
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: formState.nombre,
+          email: formState.email,
+          phone: formState.telefono || 'No especificado',
+          subject: `[Consulta Web CETPRO 01] ${formState.asunto} - ${formState.nombre}`,
+          from_name: 'Portal Web CETPRO 01 Abancay',
+          replyto: formState.email,
+          asunto_consulta: formState.asunto,
+          message: formState.mensaje,
+          botcheck: formState.botcheck ? 'spam' : undefined,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setFormSent(true);
+      } else {
+        setSubmitError(
+          result.message || 'No se pudo enviar la consulta. Por favor inténtalo nuevamente.'
+        );
+      }
+    } catch (err) {
+      console.error('Error enviando formulario a Web3Forms:', err);
+      setSubmitError(
+        'Ocurrió un error de conexión al enviar el formulario. Por favor verifica tu conexión a internet o contáctanos por WhatsApp.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -198,6 +246,41 @@ export default function ContactoPage() {
                   </div>
 
                   <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Campo honeypot anti-spam (oculto para usuarios reales) */}
+                    <input
+                      type="checkbox"
+                      name="botcheck"
+                      className="hidden"
+                      style={{ display: 'none' }}
+                      checked={formState.botcheck}
+                      onChange={(e) => setFormState({ ...formState, botcheck: e.target.checked })}
+                      tabIndex={-1}
+                      autoComplete="off"
+                    />
+
+                    {/* Alerta de Error de Envío */}
+                    {submitError && (
+                      <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start space-x-3 animate-fadeIn">
+                        <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+                        <div className="space-y-1">
+                          <p className="font-bold text-sm">No se pudo enviar la consulta</p>
+                          <p className="text-slate-600">{submitError}</p>
+                          <p className="pt-1 text-slate-700">
+                            También puedes comunicarte directamente por{' '}
+                            <a
+                              href="https://wa.me/51946020356?text=Hola%20CETPRO%2001,%20deseo%20informes%20sobre%20las%20carreras%20en%20Abancay"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="font-bold underline text-emerald-700 hover:text-emerald-800"
+                            >
+                              WhatsApp (+51 946 020 356)
+                            </a>
+                            .
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="space-y-1.5">
                       <label className="block text-xs font-bold text-[#1E2D3B] uppercase tracking-wider">
                         Nombre Completo *
@@ -205,10 +288,11 @@ export default function ContactoPage() {
                       <input
                         type="text"
                         required
+                        disabled={isSubmitting}
                         placeholder="Tu nombre y apellidos"
                         value={formState.nombre}
                         onChange={(e) => setFormState({ ...formState, nombre: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#A8DADC] focus:ring-2 focus:ring-[#A8DADC]/40 outline-none text-sm text-[#1E2D3B] bg-[#F0F7F9]/30"
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#A8DADC] focus:ring-2 focus:ring-[#A8DADC]/40 outline-none text-sm text-[#1E2D3B] bg-[#F0F7F9]/30 disabled:opacity-60"
                       />
                     </div>
 
@@ -220,10 +304,11 @@ export default function ContactoPage() {
                         <input
                           type="email"
                           required
+                          disabled={isSubmitting}
                           placeholder="tucorreo@ejemplo.com"
                           value={formState.email}
                           onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#A8DADC] focus:ring-2 focus:ring-[#A8DADC]/40 outline-none text-sm text-[#1E2D3B] bg-[#F0F7F9]/30"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#A8DADC] focus:ring-2 focus:ring-[#A8DADC]/40 outline-none text-sm text-[#1E2D3B] bg-[#F0F7F9]/30 disabled:opacity-60"
                         />
                       </div>
 
@@ -233,10 +318,11 @@ export default function ContactoPage() {
                         </label>
                         <input
                           type="tel"
-                          placeholder="Ej: 987654321"
+                          disabled={isSubmitting}
+                          placeholder="Ej: 946020356"
                           value={formState.telefono}
                           onChange={(e) => setFormState({ ...formState, telefono: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#A8DADC] focus:ring-2 focus:ring-[#A8DADC]/40 outline-none text-sm text-[#1E2D3B] bg-[#F0F7F9]/30"
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#A8DADC] focus:ring-2 focus:ring-[#A8DADC]/40 outline-none text-sm text-[#1E2D3B] bg-[#F0F7F9]/30 disabled:opacity-60"
                         />
                       </div>
                     </div>
@@ -246,9 +332,10 @@ export default function ContactoPage() {
                         Asunto
                       </label>
                       <select
+                        disabled={isSubmitting}
                         value={formState.asunto}
                         onChange={(e) => setFormState({ ...formState, asunto: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#A8DADC] outline-none text-sm text-[#1E2D3B] bg-white font-medium"
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#A8DADC] outline-none text-sm text-[#1E2D3B] bg-white font-medium disabled:opacity-60"
                       >
                         <option value="Informes sobre Carreras Técnicas">Informes sobre Carreras Técnicas</option>
                         <option value="Proceso de Admisión">Proceso de Admisión</option>
@@ -265,21 +352,36 @@ export default function ContactoPage() {
                       </label>
                       <textarea
                         required
+                        disabled={isSubmitting}
                         rows={4}
                         placeholder="Escribe aquí tu mensaje detallado..."
                         value={formState.mensaje}
                         onChange={(e) => setFormState({ ...formState, mensaje: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#A8DADC] focus:ring-2 focus:ring-[#A8DADC]/40 outline-none text-sm text-[#1E2D3B] bg-[#F0F7F9]/30"
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#A8DADC] focus:ring-2 focus:ring-[#A8DADC]/40 outline-none text-sm text-[#1E2D3B] bg-[#F0F7F9]/30 disabled:opacity-60"
                       />
                     </div>
 
                     <div className="pt-2">
                       <button
                         type="submit"
-                        className="w-full py-4 px-6 rounded-2xl bg-[#1E2D3B] text-white hover:bg-[#4A607A] font-bold text-sm shadow-xl transition-all flex items-center justify-center space-x-2"
+                        disabled={isSubmitting}
+                        className={`w-full py-4 px-6 rounded-2xl bg-[#1E2D3B] text-white font-bold text-sm shadow-xl transition-all flex items-center justify-center space-x-2 ${
+                          isSubmitting
+                            ? 'opacity-70 cursor-not-allowed'
+                            : 'hover:bg-[#4A607A] active:scale-[0.99]'
+                        }`}
                       >
-                        <Send className="w-4 h-4 text-[#A8DADC]" />
-                        <span>Enviar Mensaje a cetproabancay01@gmail.com</span>
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="w-4 h-4 text-[#A8DADC] animate-spin" />
+                            <span>Enviando consulta a cetproabancay01@gmail.com...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Send className="w-4 h-4 text-[#A8DADC]" />
+                            <span>Enviar Mensaje a cetproabancay01@gmail.com</span>
+                          </>
+                        )}
                       </button>
                     </div>
                   </form>
@@ -299,7 +401,15 @@ export default function ContactoPage() {
                   <button
                     onClick={() => {
                       setFormSent(false);
-                      setFormState({ nombre: '', email: '', telefono: '', asunto: 'Informes sobre Carreras Técnicas', mensaje: '' });
+                      setSubmitError(null);
+                      setFormState({
+                        nombre: '',
+                        email: '',
+                        telefono: '',
+                        asunto: 'Informes sobre Carreras Técnicas',
+                        mensaje: '',
+                        botcheck: false,
+                      });
                     }}
                     className="px-6 py-2.5 rounded-xl bg-[#A8DADC] text-[#1E2D3B] font-bold text-xs hover:bg-[#8ecae6] transition-colors"
                   >
