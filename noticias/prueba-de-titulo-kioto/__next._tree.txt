@@ -1,5 +1,0 @@
-:HL["/_next/static/media/22a5144ee8d83bca-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/_next/static/media/7d4881bb7e1bf84d-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/_next/static/css/82ec7ae82f100ef9.css","style"]
-:HL["https://cdn.sanity.io/images/wio7pxvt/production/1306bf90d496d772b66d3fe07df6ff1820a37054-1920x1254.jpg?w=1200","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"noticias","param":null,"prefetchHints":4192,"slots":{"children":{"name":"slug","param":{"type":"d","key":"prueba-de-titulo-kioto","siblings":[]},"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}}}},"staleTime":300,"buildId":"I6V-oIIWCfkHXYCPCHwZo"}

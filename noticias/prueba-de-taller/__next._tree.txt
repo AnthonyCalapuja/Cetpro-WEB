@@ -1,6 +1,0 @@
-:HL["/_next/static/media/22a5144ee8d83bca-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/_next/static/media/7d4881bb7e1bf84d-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/_next/static/css/82ec7ae82f100ef9.css","style"]
-:HL["https://cdn.sanity.io/images/wio7pxvt/production/0874b4b8af0353b962bca15fa90813fdf13790ec-5493x3662.jpg?w=1200","image"]
-:HL["https://cdn.sanity.io/images/wio7pxvt/production/a95d8bdd914e29836f95a36522a20ef74925c71a-3840x5760.jpg?w=1200","image"]
-0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"noticias","param":null,"prefetchHints":4192,"slots":{"children":{"name":"slug","param":{"type":"d","key":"prueba-de-taller","siblings":[]},"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}}}},"staleTime":300,"buildId":"I6V-oIIWCfkHXYCPCHwZo"}
