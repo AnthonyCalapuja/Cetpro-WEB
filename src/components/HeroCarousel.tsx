@@ -23,8 +23,8 @@ const WELCOME_SLIDE: Slide = {
   id: 'bienvenida',
   image: '/images/banner-bienvenida.png',
   imagePosition: 'object-center lg:object-right',
-  badge: '¡Bienvenidos al Portal Oficial! • CETPRO 01 Abancay',
-  titlePrefix: 'Bienvenidos a la Web,',
+  badge: 'CETPRO 01 • Portal 2026',
+  titlePrefix: 'Bienvenidos al',
   titleHighlight: 'CETPRO 01 de Abancay',
   description:
     'Te damos la más cordial bienvenida a nuestra institución líder en educación técnico-productiva. Formamos profesionales capacitados para el emprendimiento, la innovación y el éxito laboral en Apurímac.',
@@ -82,9 +82,8 @@ export const HeroCarousel: React.FC = () => {
         return (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              isCurrent ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'
-            }`}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${isCurrent ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'
+              }`}
           >
             {/* Background Image */}
             <Image
@@ -103,7 +102,7 @@ export const HeroCarousel: React.FC = () => {
             <div className="absolute inset-0 flex items-center">
               <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 w-full">
                 <div className="max-w-2xl space-y-6">
-                  
+
                   {/* Badge */}
                   <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#A8DADC]/20 border border-[#A8DADC]/40 backdrop-blur-md">
                     <Sparkles className="w-4 h-4 text-[#A8DADC]" />
@@ -189,9 +188,8 @@ export const HeroCarousel: React.FC = () => {
           <button
             key={idx}
             onClick={() => setCurrentIndex(idx)}
-            className={`h-2.5 rounded-full transition-all duration-300 ${
-              idx === currentIndex ? 'w-8 bg-[#A8DADC]' : 'w-2.5 bg-white/40 hover:bg-white/70'
-            }`}
+            className={`h-2.5 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-8 bg-[#A8DADC]' : 'w-2.5 bg-white/40 hover:bg-white/70'
+              }`}
             aria-label={`Ir al slide ${idx + 1}`}
           />
         ))}

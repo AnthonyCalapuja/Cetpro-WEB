@@ -4,14 +4,14 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  MessageSquare, 
-  Send, 
-  CheckCircle2, 
-  Clock, 
+import {
+  Mail,
+  Phone,
+  MapPin,
+  MessageSquare,
+  Send,
+  CheckCircle2,
+  Clock,
   ExternalLink,
   Building,
   HelpCircle,
@@ -88,17 +88,17 @@ export default function ContactoPage() {
         {/* Formulario y Tarjetas de Contacto */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            
+
             {/* Info Cards Side */}
             <div className="lg:col-span-5 space-y-6">
-              
+
               <div className="bg-white rounded-3xl p-8 border border-[#A8DADC]/50 shadow-lg space-y-6">
                 <h3 className="text-2xl font-bold text-[#1E2D3B]">
                   Información Institucional
                 </h3>
 
                 <div className="space-y-5 text-sm text-[#1E2D3B]">
-                  
+
                   {/* Item 1 */}
                   <div className="flex items-start space-x-4">
                     <div className="p-3 bg-[#F0F7F9] text-[#1E2D3B] rounded-xl border border-[#A8DADC]/40 shrink-0">
@@ -129,8 +129,8 @@ export default function ContactoPage() {
                       <p className="text-xs text-slate-500">
                         Apurímac, Perú (a 3 cuadras de la Plaza de Armas)
                       </p>
-                      <a 
-                        href="#mapa-ubicacion" 
+                      <a
+                        href="#mapa-ubicacion"
                         className="inline-flex items-center space-x-1 text-xs font-bold text-[#4A607A] hover:text-[#1E2D3B] underline pt-1"
                       >
                         <Compass className="w-3.5 h-3.5" />
@@ -172,7 +172,7 @@ export default function ContactoPage() {
                   </p>
                 </div>
                 <a
-                  href="https://wa.me/51987654321?text=Hola%20CETPRO%2001,%20deseo%20informes%20sobre%20las%20carreras%20en%20Abancay"
+                  href="https://wa.me/51946020356?text=Hola%20CETPRO%2001,%20deseo%20informes%20sobre%20las%20carreras%20en%20Abancay"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-4 py-3 bg-white text-emerald-900 font-extrabold text-xs rounded-xl hover:bg-emerald-100 transition-colors shrink-0 shadow"
@@ -315,7 +315,7 @@ export default function ContactoPage() {
         {/* Sección de Mapa y Ubicación Geográfica */}
         <section id="mapa-ubicacion" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
           <div className="bg-white rounded-3xl p-6 sm:p-10 border border-[#A8DADC]/60 shadow-xl space-y-8">
-            
+
             {/* Header del Mapa */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-100">
               <div className="space-y-2">
@@ -365,10 +365,10 @@ export default function ContactoPage() {
 
             {/* Grid: Tarjetas de Información Rápida + Iframe del Mapa */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              
+
               {/* Tarjetas de Información de Acceso */}
               <div className="lg:col-span-4 space-y-4">
-                
+
                 {/* Tarjeta Dirección Principal */}
                 <div className="bg-gradient-to-br from-[#F0F7F9] to-white p-6 rounded-2xl border border-[#A8DADC]/50 shadow-sm space-y-3">
                   <div className="flex items-center space-x-3">
@@ -455,7 +455,7 @@ export default function ContactoPage() {
                     referrerPolicy="no-referrer-when-downgrade"
                     className="w-full h-full"
                   />
-                  
+
                   {/* Badge Flotante en el mapa */}
                   <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-md px-4 py-2 rounded-xl shadow-lg border border-[#A8DADC]/60 flex items-center space-x-2 text-xs">
                     <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></div>
