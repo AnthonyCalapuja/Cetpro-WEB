@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Navbar } from '@/components/Navbar';
@@ -22,8 +22,7 @@ import {
   Users,
   ShieldCheck,
   BookOpen,
-  Loader2,
-  ExternalLink
+  Loader2
 } from 'lucide-react';
 
 interface NoticiaItem {
@@ -52,7 +51,8 @@ export default function NoticiasPage() {
   const [selectedCategory, setSelectedCategory] = useState('todos');
   const [emailSubscribed, setEmailSubscribed] = useState(false);
   const [subscriberEmail, setSubscriberEmail] = useState('');
-  const [news, setNews] = useState<NoticiaItem[]>([]);
+  const [allNews, setAllNews] = useState<any[]>([]);
+  const [currentTime, setCurrentTime] = useState<Date>(new Date());
   const [loading, setLoading] = useState(true);
 
   const categories = [
@@ -63,65 +63,89 @@ export default function NoticiasPage() {
     { id: 'empleo', label: 'Convenios y Empleo' },
   ];
 
+  // Temporizador dinámico: actualiza el reloj cada 60 segundos para desbloquear noticias programadas automáticamente
   useEffect(() => {
-    async function loadSanityNews() {
-      try {
-        setLoading(true);
-        const query = `*[_type == "noticia"] | order(publishedAt desc) {
-          _id,
-          title,
-          "slug": slug.current,
-          category,
-          publishedAt,
-          featured,
-          mainImage,
-          excerpt
-        }`;
-        const items = await client.fetch(query);
-        if (items && Array.isArray(items)) {
-          const mapped: NoticiaItem[] = items.map((doc: any, index: number) => {
-            const meta = CATEGORY_META[doc.category] || {
-              label: 'Comunicado Oficial',
-              color: 'bg-[#1E2D3B] text-[#A8DADC]',
-              tag: 'Noticia Oficial',
-            };
-            const formattedDate = doc.publishedAt
-              ? new Date(doc.publishedAt).toLocaleDateString('es-PE', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-              })
-              : 'Reciente';
-
-            return {
-              id: doc._id || `noticia-${index}`,
-              slug: doc.slug || doc._id,
-              category: doc.category || 'comunicados',
-              categoryLabel: meta.label,
-              categoryColor: meta.color,
-              title: doc.title || 'Publicación sin título',
-              excerpt: doc.excerpt || 'Haz clic para leer todos los detalles de esta publicación institucional.',
-              date: formattedDate,
-              readTime: '3 min de lectura',
-              tag: meta.tag,
-              imageUrl: doc.mainImage ? urlForImage(doc.mainImage).width(800).url() : null,
-              featured: doc.featured || false,
-            };
-          });
-          setNews(mapped);
-        }
-      } catch (err) {
-        console.warn('Aviso: Error cargando publicaciones desde Sanity:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadSanityNews();
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000);
+    return () => clearInterval(timer);
   }, []);
 
+  // Carga y sincronización periódica con Sanity (cada 60 segundos)
+  const loadSanityNews = useCallback(async () => {
+    try {
+      const query = `*[_type == "noticia" && defined(slug.current)] | order(publishedAt desc) {
+        _id,
+        title,
+        "slug": slug.current,
+        category,
+        publishedAt,
+        featured,
+        mainImage,
+        excerpt
+      }`;
+      const items = await client.fetch(query);
+      if (items && Array.isArray(items)) {
+        setAllNews(items);
+      }
+    } catch (err) {
+      console.warn('Aviso: Error cargando publicaciones desde Sanity:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadSanityNews();
+    const syncInterval = setInterval(() => {
+      loadSanityNews();
+    }, 60000);
+    return () => clearInterval(syncInterval);
+  }, [loadSanityNews]);
+
+  // Filtro reactivo en vivo: solo publicaciones cuya hora de publicación sea menor o igual al reloj actual
+  const visibleNews: NoticiaItem[] = useMemo(() => {
+    const nowTime = currentTime.getTime();
+    return allNews
+      .filter((doc) => {
+        if (!doc.publishedAt) return true;
+        const postTime = new Date(doc.publishedAt).getTime();
+        return postTime <= nowTime;
+      })
+      .map((doc, index) => {
+        const meta = CATEGORY_META[doc.category] || {
+          label: 'Comunicado Oficial',
+          color: 'bg-[#1E2D3B] text-[#A8DADC]',
+          tag: 'Noticia Oficial',
+        };
+        const formattedDate = doc.publishedAt
+          ? new Date(doc.publishedAt).toLocaleDateString('es-PE', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            })
+          : 'Reciente';
+
+        return {
+          id: doc._id || `noticia-${index}`,
+          slug: doc.slug || doc._id,
+          category: doc.category || 'comunicados',
+          categoryLabel: meta.label,
+          categoryColor: meta.color,
+          title: doc.title || 'Publicación sin título',
+          excerpt: doc.excerpt || 'Haz clic para leer todos los detalles de esta publicación institucional.',
+          date: formattedDate,
+          readTime: '3 min de lectura',
+          tag: meta.tag,
+          imageUrl: doc.mainImage ? urlForImage(doc.mainImage).width(800).url() : null,
+          featured: doc.featured || false,
+        };
+      });
+  }, [allNews, currentTime]);
+
   const filteredNews = selectedCategory === 'todos'
-    ? news
-    : news.filter((item) => item.category === selectedCategory);
+    ? visibleNews
+    : visibleNews.filter((item) => item.category === selectedCategory);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
